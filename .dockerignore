@@ -1,0 +1,5 @@
+bin
+Dockerfile
+.dockerignore
+.gitignore
+README

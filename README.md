@@ -1,5 +1,7 @@
 # furiganalize-epub
 
+Forked and modified from https://github.com/haoxuany/furiganalize-epub
+
 > japanese is hard lol -- Aaron
 
 Japanese pronounciation of Kanji is hard. The meaning and writing of Kanji is easy (because I speak Chinese at a native level lol). To save me from looking up the pronounciation of every other word in a Japanese light novel and failing *every* **single** *time* because I have fat thumbs, and the Kindle Paperwhite isn't great at handling lookup selections, I hacked this thing that takes in a epub book, looks up Kanji pronounciations and tries to backpatch furigana onto the existing Kanji text.
@@ -14,7 +16,12 @@ Also, note that mecab isn't the best at guessing Japanese pronounciation, due to
 
 # Setup
 
-You will need:
+A Dockerfile is provided:
+```
+docker build -t furiganalize .
+```
+
+Otherwise, you will need:
   - MLton compiler (http://www.mlton.org/, or generally just from your favorite package manager.)
   - MeCab (http://taku910.github.io/mecab/#download)
   - MeCab IPA Dictionary (http://taku910.github.io/mecab/#download)
@@ -68,8 +75,18 @@ Note that this creates a dummy binary in `bin/furiganalize` with a heap right ne
 ```sh
 $ ./bin/furiganalize book.epub
 ```
+or if you use the Docker:
+```sh
+docker run -v /path_to_your_library:/workdir:rw -it furiganalize:latest book.epub
+```
 
 This creates a backup for `book.epub` named as `book_bkp_<timestamp>.epub`, and overwrites `book.epub` with content annotated with furigana. If you don't want to make a backup just pass in `-d`.
+
+Your ebook is not an EPUB ?
+The ebook-convert program is included in the Docker if you need to convert, for example:
+```sh
+docker run -v /path_to_your_library:/workdir:rw -it --entrypoint=ebook-convert furiganalize:latest book.azw3 book.epub
+```
 
 If you use a Kindle Paperwhite like me, I would recommend running [kindlegen](https://www.amazon.com/gp/feature.html?ie=UTF8&docId=1000765211) on the output to convert to Kindle compatible mobi,
 and use the email "Send to Kindle", since apparently Amazon's service also does some word boundary detection.
